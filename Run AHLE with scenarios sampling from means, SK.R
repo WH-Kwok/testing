@@ -1,6 +1,5 @@
 setwd("D:/Users/SK/Documents/gbad")
-lapply( c("tidyverse", "readxl", "freedom", "truncnorm",
-          "data.table", "doParallel", "abind"), require, character.only = T)
+lapply( c("tidyverse", "readxl", "freedom", "truncnorm","data.table", "doParallel", "abind"), require, character.only = T)
 cl = (detectCores()*.94) %>% floor %>% makeCluster; registerDoParallel(cl)
 
 f_model = function(
@@ -69,16 +68,14 @@ f_model = function(
       map(par, ~ {if(is.list(.x)) .x = .x else .x = list(.x) %>% rep(6)}) %>% c(list(N0 = N0), .)
     }) 
   
-  f_par = function(par, cats, .t, .p, .l, nruns, Num_months, baseline_scen, control_scen, ill_month){
-    
+  f_par = function(par, cats, .t, .p, .l, nruns, Num_months, baseline_scen, control_scen, ill_month){    
     out = foreach(seed = 1:nruns) %dopar% {
       require(tidyverse)
       if(is.null(baseline_scen)) p = par else p = par[[1]]
       pop <- list()
       pop[[1]] <- p$N0
       
-      for(i in 1 : Num_months){
-        
+      for(i in 1 : Num_months){        
         attach(pop[[i]])
         pre = list(.AF, .AF, .NF, .NM, .JF, .JM)
         post= list(.NF, .NM, .JF, .JM, .AF, .AM)
@@ -135,8 +132,7 @@ f_model = function(
             names(Df)=names(Df)[-length(Df)] %>% paste0(., "_", .t) %>% c(., .p)
             Df
           }
-        ) %>% data.frame
-        
+        ) %>% data.frame        
       }
       
       out = pop %>% .[-1] %>% do.call(rbind, .) 
@@ -153,12 +149,10 @@ f_model = function(
                     }
       ) %>% data.frame 
       xc = subtot %>% select(starts_with(c(".", "new", "QLwKg"))) %>% names
-      subtot %>% mutate_if(!names(.) %in% xc, cumsum)
-      
+      subtot %>% mutate_if(!names(.) %in% xc, cumsum)      
     }
     
-    ou=
-      map(
+    ou=map(
         list(mean, sd, min, function(x) quantile(x, .25), median, function(x) quantile(x, .75), max), 
         function(x) abind(out, along=3) %>% apply(., 1:2, x) %>% as.data.frame
       ) 
@@ -170,8 +164,7 @@ f_model = function(
           lab=c("B", "Gi", "Go", "D", "O", "C", "sum", "come", "leave", "diff", "new", 
                 "NOftk", "PopGro", "TotNChg", "TotMort", "QLwKg", "OftkLw", "QMeat", "QManu", "QHides", "QMilk", "QWool", 
                 "CumDM", "ValOftk", "ValHerd", "TotVal", "ValManu", "ValHides", "ValMilk", "ProdVal", 
-                "FdCost", "LbCost", "HthCost", "CapCost", "IstCost", "TotExp", 
-                "GrsMrg", 
+                "FdCost", "LbCost", "HthCost", "CapCost", "IstCost", "TotExp", "GrsMrg", 
                 "NF", "NM", "JF", "JM", "AF", "AM", "Overall", "NCom", "JCom", "ACom", "FCom", "MCom")
           name=c("Births", "Growth in", "Growth out", "Deaths", "Offtakes", "Culls", 
                  "Sum", "Come in", "Leave", "Difference", "Population", 
@@ -179,15 +172,13 @@ f_model = function(
                  "Population Liveweight (kg)", "Offtake Liveweight (kg)", "Meat (kg)", "Manure", "Hides", "Milk", "Wool", 
                  "Cml Dry Matter", "Value of Offtake", "Value of Herd Increase", "Value of Herd Increase plus Offtake", 
                  "Value of Manure", "Value of Hides", "Value of Milk", "Total Production Value", 
-                 "Feed Cost", "Labour Cost", "Health Cost", "Capital Cost", "Infrastructure Cost", "Total Expenditure", 
-                 "Gross Margin", 
+                 "Feed Cost", "Labour Cost", "Health Cost", "Capital Cost", "Infrastructure Cost", "Total Expenditure", "Gross Margin", 
                  "Neonatal Female", "Neonatal Male", "Juvenile Female", "Juvenile Male", "Adult Female", "Adult Male", 
                  "Overall", "Neonatal Combined", "Juvenile Combined", "Adult Combined", "Female Combined", "Male Combined")
           
           for(i in 1:length(lab)) x[x == lab[[i]]] <- name[[i]]; x
         }
-      ) %>% .[.$Item != "", ]
-    
+      ) %>% .[.$Item != "", ]    
   }
   
   if(is.null(baseline_scen)){
@@ -201,28 +192,5 @@ f_model = function(
   output
 }
 
-
-pmap(
-  list(
-    list(NULL,"CLM_G_Ideal","CLM_G_Ideal","CLM_G_Ideal","CLM_G_Ideal"),
-    list(NULL,NULL,"CLM_G_Current","CLM_G_Current","CLM_G_Current"),
-    list(NULL,NULL,c(1:3),c(4:6),c(1:3, 7:9))
-  ),
-  function(x,y,z)  {
-    m=f_model("AHLE scenario parameters-20221202 v2.xlsx",
-              baseline_scen = x, control_scen = y, ill_month = z)
-    m$CLM_G_Ideal %>%write.csv(
-      paste(
-        format(Sys.time(), "%d %m %y %H %M %S"),
-        "test.csv" )
-    )
-  }
-)
-
-
-
 stopCluster(cl)
 registerDoSEQ()
-
-
-
