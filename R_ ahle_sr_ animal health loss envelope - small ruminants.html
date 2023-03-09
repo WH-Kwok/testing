@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)http://localhost:13461/session/file49dc33256bf1.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>R: ahle_sr: animal health loss envelope - small ruminants</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<link rel="stylesheet" href="./R_ ahle_sr_ animal health loss envelope - small ruminants_files/katex.min.css">
+<script type="text/javascript">
+const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
+function processMathHTML() {
+    var l = document.getElementsByClassName('reqn');
+    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
+    return;
+}</script>
+<script defer="" src="./R_ ahle_sr_ animal health loss envelope - small ruminants_files/katex.min.js.download" onload="processMathHTML();"></script>
+<link rel="stylesheet" type="text/css" href="./R_ ahle_sr_ animal health loss envelope - small ruminants_files/R.css">
+</head><body><div class="container">
+
+<table style="width: 100%;"><tbody><tr><td>ahle_sr</td><td style="text-align: right;">R Documentation</td></tr></tbody></table>
+
+<h2>ahle_sr: animal health loss envelope - small ruminants 
+
+</h2>
+
+<h3>Description</h3>
+
+<p>This function is designed to simulate the (sub) population change of small ruminants as well as to estimate the associated quantities of products, costs, spending as well as gross margin. 
+
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class="language-R">
+ahle_sr(file, sheet = 1, par_names = "AHLE Parameter", 
+        ignore = "Notes", nruns = 1000, Num_months = 12, 
+        baseline_scen = NULL, control_scen = NULL, ill_month = NULL)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tbody><tr style="vertical-align: top;"><td><code>file</code></td>
+<td>
+     
+<p>the directory of the Excel file
+</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>sheet</code></td>
+<td>
+<p> which sheet
+
+</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>par_names</code></td>
+<td>
+<p> name of the column which contains names of the parameters
+
+</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>ignore</code></td>
+<td>
+<p>which column(s) to ignore
+
+</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>nruns</code></td>
+<td>
+<p>number of runs (number of samplings)
+
+</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>Num_months</code></td>
+<td>
+<p>number of months
+
+</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>baseline_scen</code></td>
+<td>
+<p>which scenario to run as a baseline scenario. If NULL, all scenarios will be run.
+
+</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>control_scen</code></td>
+<td>
+<p>which scenario should be run as a control (comparison) scenario. One only. If NULL, no control scenario is specified.
+
+</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>ill_month</code></td>
+<td>
+<p>which month(s) in Num_months should run the control scenario, otherwise the baseline scenario will be used.
+
+</p>
+</td></tr>
+</tbody></table>
+
+
+<h3>Details</h3>
+
+<p>This function is designed to simulate the (sub) population change of small ruminants as well as to estimate the associated quantities of products, costs, spending as well as gross margin. par_names contains names of the parameters, these variable names are row names. So each column contains values of these parameters. Currently this function is rigid for the targeted data frame https://github.com/GBADsInformatics/GBADsLiverpool/blob/main/Ethiopia%20Workspace/Code%20and%20Control%20Files/AHLE%20scenario%20parameters%20SMALLRUMINANTS.xlsx. Each column is a scenario offering parameter values as the inputs at time 0 in the model. The number of consecutive months for simulation and estimation should not be less than 1. Assuming the normal period and the outbreak period are different scenarios, baseline_scen and control_scen and  ill_month can be specified to allow which month to use which scenario (parameter set). They are NULL by default so all scenarios will be run, without switching scenario in a period.
+
+</p>
+
+
+<h3>Value</h3>
+
+<p>The output is a data frame which contains mean, SD, min, max, 25, 50, 75% quantiles of output variables by population subgroups. 
+
+
+</p>
+<table>
+<tbody><tr style="vertical-align: top;"><td><code>Output variables  </code></td>
+<td>
+<p>"Births", "Growth in", "Growth out", "Deaths", "Offtakes", "Culls", "Sum", "Inflow", "Outflow", "Difference", "Population", "Num Offtake", "Cml Pop Growth", "Total Number Increase", "Total Mortality", "Population Liveweight (kg)", "Offtake Liveweight (kg)", "Meat (kg)", "Manure", "Hides", "Milk", "Wool", "Cml Dry Matter", "Value of Offtake", "Value of Herd Increase", "Value of Herd Increase plus Offtake", "Value of Manure", "Value of Hides", "Value of Milk", "Total Production Value", "Feed Cost", "Labour Cost", "Health Cost", "Capital Cost", "Infrastructure Cost", "Total Expenditure", "Gross Margin".</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>Subgroups </code></td>
+<td>
+<p>"Neonatal Female", "Neonatal Male", "Juvenile Female", "Juvenile Male", "Adult Female", "Adult Male", "Overall", "Neonatal Combined", "Juvenile Combined", "Adult Combined", "Female Combined", "Male Combined".</p>
+</td></tr>
+</tbody></table>
+
+
+
+<h3>See Also</h3>
+
+<p>https://github.com/GBADsInformatics/GBADsLiverpool/tree/main/Ethiopia%20Workspace
+</p>
+<p>https://github.com/stephen-wh-kwok/gbads/blob/main/Gbads%20ahle%20small%20ruminants.R
+
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class="language-R"># NOT RUN {
+
+# set working directory
+setwd("D:/Users/SK/Documents/gbad")
+# read code
+source("Gbads ahle small ruminants.R")
+# create object for file directory
+file = "AHLE scenario parameters-20221202.xlsx"
+# run all scenarios
+all_scen &lt;- ahle_sr(file) 
+# run a baseline scenario 
+one_scen &lt;- ahle_sr(file, baseline_scen = "CLM_G_Ideal") 
+# run a baseline and a control scenario 
+two_scen &lt;- ahle_sr(file, baseline_scen = "CLM_G_Ideal", control_scen = "CLM_G_Current", ill_month = c(1, 3, 10:12)) 
+ 
+#}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</code></pre>
+
+
+</div>
+
+</body></html>
