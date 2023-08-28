@@ -1985,4 +1985,15 @@ for (COLNAME in colnames(ahle_scenarios_cln)){
 
 }
 
-#ahle_cattle()
+ 
+# e.g.
+# 
+# ahle_cattle()
+# 
+# ahle_cattle(50)
+# 
+# ahle_cattle(cmd_run_first_n_scenarios = "cattle_trial_CLM_all_mortality_zero")
+# 
+# ahle_cattle(cmd_run_first_n_scenarios = "all")
+
+
