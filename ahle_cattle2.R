@@ -31,7 +31,7 @@ cmd_run_first_n_scenarios = "cattle_trial_CLM_current"#-1 	# -1 means use all sc
 # ,
 # return ="table"# "iter" 
 ){
-if (!require("pacman")) install.packages("pacman");pacman::p_load(mc2d, truncnorm, readxl)
+if (!require("pacman")) install.packages("pacman");pacman::p_load(mc2d, truncnorm, readxl,tidyverse)
 # -----------------------------------------------------------------
 # Get from command line arguments
 # -----------------------------------------------------------------
